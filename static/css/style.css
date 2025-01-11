@@ -18,7 +18,7 @@ body {
 /* App Container */
 .app-container {
     width: 100%;
-    max-width: 600px;
+    max-width: 800px; /* Adjusted for space with the logo */
     height: 90vh;
     display: flex;
     flex-direction: column;
@@ -34,11 +34,29 @@ body {
     text-align: center;
     background-color: #242424;
     border-bottom: 1px solid #444;
-    color: #4CAF50;
+    color: #0066FF;
 }
 
 .chat-header h1 {
     font-size: 18px;
+}
+
+/* Main Content Layout */
+.main-content {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px; /* Space between chat and logo */
+    height: 100%;
+}
+
+/* Chat Box Container */
+.chat-box-container {
+    flex: 1; /* Takes the remaining width */
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 /* Chat Box */
@@ -49,6 +67,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    background-color: #2e2e2e;
 }
 
 /* Messages */
@@ -62,23 +81,26 @@ body {
 .message {
     display: flex;
     max-width: 70%;
-    padding: 10px 15px;
-    border-radius: 10px;
+    padding: 15px 20px;
+    border-radius: 20px;
+    font-size: 16px;
+    line-height: 1.5;
     word-wrap: break-word;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 .user-message {
     align-self: flex-end;
-    background-color: #4CAF50;
-    color: #fff;
-    border-radius: 10px 10px 0 10px;
+    background: #0066FF;
+    color: #ffffff;
+    border-radius: 20px 20px 0px 20px;
 }
 
 .bot-message {
     align-self: flex-start;
     background-color: #444;
     color: #eaeaea;
-    border-radius: 10px 10px 10px 0;
+    border-radius: 20px 20px 20px 0px;
 }
 
 /* Chat Input */
@@ -122,7 +144,7 @@ body {
 }
 
 .text-input-wrapper button.enabled:hover svg {
-    fill: #4CAF50;
+    fill: #0066FF;
 }
 
 .text-input-wrapper button svg {
@@ -147,7 +169,7 @@ body {
 }
 
 #image-upload-button:hover svg {
-    fill: #4CAF50;
+    fill: #0066FF;
 }
 
 /* Image Message */
@@ -161,7 +183,20 @@ body {
 /* Waiting Effect */
 .waiting {
     font-style: italic;
-    color: #aaa; /* Gray color for "Thinking..." message */
-    opacity: 0.8;
-    text-align: left;
+    color: #0066FF;
+    animation: blink 1s linear infinite;
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* Logo Styling */
+.app-logo {
+    width: auto; /* Make the image responsive to the container width */
+    height: 100px; /* Maintain the image's aspect ratio */
+    object-fit: contain; /* Ensure the image fits neatly inside the container */
+    border-radius: 10px; /* Optional: Add rounded corners */
 }
