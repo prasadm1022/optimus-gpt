@@ -23,14 +23,17 @@ document.addEventListener("DOMContentLoaded", () => {
     sendButton.addEventListener("click", () => {
         const message = userInput.value.trim();
         if (message) {
-            addMessageToChat(message, "user-message"); // Display the user's message
+            addMessageToChat(message, "user-message"); // Display user's message
             if (message.toLowerCase().startsWith("generate:")) {
                 const prompt = message.substring(9).trim();
+                addWaitingEffect(); // Show waiting effect
                 generateImage(prompt);
             } else {
+                addWaitingEffect(); // Show waiting effect
                 processText(message);
             }
         } else if (imageInput.files.length > 0) {
+            addWaitingEffect(); // Show waiting effect
             uploadImage(imageInput.files[0]);
         }
         userInput.value = ""; // Clear input
@@ -54,6 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
         })
             .then((response) => response.json())
             .then((data) => {
+                removeWaitingEffect(); // Remove waiting effect
                 if (data.response) {
                     addMessageToChat(data.response, "bot-message");
                 } else if (data.error) {
@@ -73,6 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
         })
             .then((response) => response.json())
             .then((data) => {
+                removeWaitingEffect(); // Remove waiting effect
                 if (data.image_url) {
                     addImageToChat(data.image_url, "bot-message");
                 } else {
@@ -90,6 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
         })
             .then((response) => response.json())
             .then((data) => {
+                removeWaitingEffect(); // Remove waiting effect
                 if (data.image_url) {
                     addImageToChat(data.image_url, "bot-message");
                 } else {
@@ -119,6 +125,24 @@ document.addEventListener("DOMContentLoaded", () => {
         messageElement.appendChild(img);
         messages.appendChild(messageElement);
         messages.scrollTop = messages.scrollHeight;
+    }
+
+    // Add Waiting Effect
+    function addWaitingEffect() {
+        const waitingElement = document.createElement("div");
+        waitingElement.classList.add("message", "bot-message", "waiting");
+        waitingElement.textContent = "Processing...";
+        waitingElement.id = "waiting-effect"; // Add an ID for easy removal
+        messages.appendChild(waitingElement);
+        messages.scrollTop = messages.scrollHeight;
+    }
+
+    // Remove Waiting Effect
+    function removeWaitingEffect() {
+        const waitingElement = document.getElementById("waiting-effect");
+        if (waitingElement) {
+            waitingElement.remove();
+        }
     }
 
     // Toggle Send Button State

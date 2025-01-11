@@ -22,49 +22,15 @@ def home():
     return render_template("index.html")
 
 
-@app.route("/process_input", methods=["POST"])
-def process_input():
-    """
-    Handles both text and image inputs.
-    """
-    data = request.json
-    user_input = data.get("input")
-    if not user_input:
-        return jsonify({"error": "No input provided"}), 400
-
-    # Check if the input is an image generation prompt
-    if user_input.lower().startswith("generate:"):
-        prompt = user_input[len("generate:"):].strip()
-        if not prompt:
-            return jsonify({"error": "Invalid prompt"}), 400
-        return generate_image(prompt)
-
-    # Process natural language input
-    return process_text(user_input)
-
-
-@app.route("/upload_image", methods=["POST"])
-def upload_image():
-    """
-    Handles uploaded images for processing.
-    """
-    if "image" not in request.files:
-        return jsonify({"error": "No image uploaded"}), 400
-
-    image = request.files["image"]
-    if image.filename == "":
-        return jsonify({"error": "No selected file"}), 400
-
-    filename = os.path.join(app.config["UPLOAD_FOLDER"], image.filename)
-    image.save(filename)
-    processed_path = apply_filter(filename)
-    return jsonify({"image_url": processed_path})
-
-
-def generate_image(prompt):
+@app.route("/generate_image", methods=["POST"])
+def generate_image():
     """
     Generates an image using OpenAI's DALL-E API.
     """
+    data = request.json
+    prompt = data.get("prompt")
+    if not prompt:
+        return jsonify({"error": "No prompt provided"}), 400
     try:
         response = openai.Image.create(
             prompt=prompt,
@@ -77,10 +43,15 @@ def generate_image(prompt):
         return jsonify({"error": f"Image generation failed: {str(e)}"}), 500
 
 
-def process_text(user_input):
+@app.route("/process_input", methods=["POST"])
+def process_input():
     """
-    Processes text input using OpenAI's GPT API.
+    Handles text input for natural language processing.
     """
+    data = request.json
+    user_input = data.get("input")
+    if not user_input:
+        return jsonify({"error": "No input provided"}), 400
     try:
         response = openai.ChatCompletion.create(
             model="gpt-4",
@@ -90,6 +61,22 @@ def process_text(user_input):
         return jsonify({"response": bot_response})
     except Exception as e:
         return jsonify({"error": f"Text processing failed: {str(e)}"}), 500
+
+
+@app.route("/upload_image", methods=["POST"])
+def upload_image():
+    """
+    Handles uploaded images for processing.
+    """
+    if "image" not in request.files:
+        return jsonify({"error": "No image uploaded"}), 400
+    image = request.files["image"]
+    if image.filename == "":
+        return jsonify({"error": "No selected file"}), 400
+    filename = os.path.join(app.config["UPLOAD_FOLDER"], image.filename)
+    image.save(filename)
+    processed_path = apply_filter(filename)
+    return jsonify({"image_url": processed_path})
 
 
 def apply_filter(image_path):

@@ -157,3 +157,11 @@ body {
     border-radius: 10px;
     margin-top: 5px;
 }
+
+/* Waiting Effect */
+.waiting {
+    font-style: italic;
+    color: #aaa; /* Gray color for "Thinking..." message */
+    opacity: 0.8;
+    text-align: left;
+}
