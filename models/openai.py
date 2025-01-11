@@ -1,21 +1,36 @@
 import openai
 import os
-from dotenv import load_dotenv
 
-# Load environment variables
-load_dotenv()
+# Configure OpenAI API key
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-def get_openai_response(user_message):
+
+def generate_openai_image(prompt):
+    """
+    Generates an image using OpenAI's DALL-E API.
+    """
+    try:
+        response = openai.Image.create(
+            prompt=prompt,
+            n=1,
+            size="512x512"
+        )
+        image_url = response["data"][0]["url"]
+        return {"image_url": image_url}
+    except Exception as e:
+        return {"error": f"Image generation failed: {str(e)}"}
+
+
+def process_openai_text(user_input):
+    """
+    Processes text input using OpenAI's GPT API.
+    """
     try:
         response = openai.ChatCompletion.create(
             model="gpt-4",
-            messages=[
-                {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": user_message}
-            ],
-            max_tokens=150
+            messages=[{"role": "user", "content": user_input}]
         )
-        return response['choices'][0]['message']['content']
-    except openai.error.OpenAIError as e:
-        return f"An error occurred: {str(e)}"
+        bot_response = response["choices"][0]["message"]["content"]
+        return {"response": bot_response}
+    except Exception as e:
+        return {"error": f"Text processing failed: {str(e)}"}

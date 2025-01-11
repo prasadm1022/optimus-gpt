@@ -2,14 +2,11 @@ import os
 from flask import Flask, request, jsonify, render_template
 from flask_socketio import SocketIO, emit
 from PIL import Image, ImageFilter  # For image processing
-import openai  # For OpenAI API integration
+from models.openai import generate_openai_image, process_openai_text  # Importing OpenAI helpers
 
 # Initialize Flask and SocketIO
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
-
-# Configure OpenAI API key
-openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # Directory to save uploaded images
 UPLOAD_FOLDER = "static/uploads"
@@ -31,16 +28,11 @@ def generate_image():
     prompt = data.get("prompt")
     if not prompt:
         return jsonify({"error": "No prompt provided"}), 400
-    try:
-        response = openai.Image.create(
-            prompt=prompt,
-            n=1,
-            size="512x512"
-        )
-        image_url = response["data"][0]["url"]
-        return jsonify({"image_url": image_url})
-    except Exception as e:
-        return jsonify({"error": f"Image generation failed: {str(e)}"}), 500
+
+    result = generate_openai_image(prompt)
+    if "image_url" in result:
+        return jsonify({"image_url": result["image_url"]})
+    return jsonify({"error": result["error"]}), 500
 
 
 @app.route("/process_input", methods=["POST"])
@@ -52,15 +44,11 @@ def process_input():
     user_input = data.get("input")
     if not user_input:
         return jsonify({"error": "No input provided"}), 400
-    try:
-        response = openai.ChatCompletion.create(
-            model="gpt-4",
-            messages=[{"role": "user", "content": user_input}]
-        )
-        bot_response = response["choices"][0]["message"]["content"]
-        return jsonify({"response": bot_response})
-    except Exception as e:
-        return jsonify({"error": f"Text processing failed: {str(e)}"}), 500
+
+    result = process_openai_text(user_input)
+    if "response" in result:
+        return jsonify({"response": result["response"]})
+    return jsonify({"error": result["error"]}), 500
 
 
 @app.route("/upload_image", methods=["POST"])
@@ -70,9 +58,11 @@ def upload_image():
     """
     if "image" not in request.files:
         return jsonify({"error": "No image uploaded"}), 400
+
     image = request.files["image"]
     if image.filename == "":
         return jsonify({"error": "No selected file"}), 400
+
     filename = os.path.join(app.config["UPLOAD_FOLDER"], image.filename)
     image.save(filename)
     processed_path = apply_filter(filename)
