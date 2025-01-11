@@ -5,28 +5,40 @@
     box-sizing: border-box;
 }
 
-/* Body Styles */
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #181818; /* Dark background color */
-    color: #eaeaea; /* Light text color */
+    background-color: #181818; /* Dark background */
+    color: #eaeaea; /* Light text */
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
 }
 
-/* Chat Container */
-.chat-container {
+/* App Container */
+.app-container {
     width: 100%;
     max-width: 600px;
-    height: 80vh;
-    background-color: #2e2e2e; /* Dark chat container background */
-    border-radius: 15px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    height: 90vh;
     display: flex;
     flex-direction: column;
+    border-radius: 15px;
     overflow: hidden;
+    background-color: #2e2e2e; /* Darker container */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Chat Header */
+.chat-header {
+    padding: 15px;
+    text-align: center;
+    background-color: #242424; /* Darker header background */
+    border-bottom: 1px solid #444;
+    color: #4CAF50; /* Green text */
+}
+
+.chat-header h1 {
+    font-size: 18px;
 }
 
 /* Chat Box */
@@ -37,108 +49,84 @@ body {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    background-color: #2e2e2e; /* Same dark color for chat history */
 }
 
-/* Chat Input Container */
-.chat-input-container {
+/* Messages */
+.messages {
     display: flex;
-    padding: 10px;
-    border-top: 1px solid #444; /* Darker divider */
-    background-color: #333; /* Dark background for input area */
-    position: relative;
-}
-
-/* User Input Styles */
-#user-input {
-    flex-grow: 1; /* Allow the input field to grow and fill space */
-    min-height: 40px;
-    padding: 15px;
-    border-radius: 20px;
-    border: none;
-    background-color: #444; /* Dark background for input field */
-    color: #eaeaea; /* Light text color for input */
-    font-size: 16px;
-    line-height: 1.4;
-    resize: none; /* Prevent resizing the input box */
-    outline: none;
-    transition: background-color 0.3s ease, border 0.3s ease;
-    padding-right: 60px; /* Increased padding to make space for larger send button */
-}
-
-#user-input::placeholder {
-    color: #777; /* Faded placeholder color */
-    opacity: 1; /* Ensure the placeholder text is visible */
-}
-
-#user-input:focus {
-    background-color: #555; /* Slightly lighter background when focused */
-    border: 1px solid #4CAF50; /* Green border when focused */
-}
-
-/* Send Button Styles */
-#send-button {
-    position: absolute;
-    right: 15px; /* Add margin to the right side */
-    top: 50%;
-    transform: translateY(-50%); /* Vertically center the button */
-    width: 40px; /* Increased width for a larger button */
-    height: 40px; /* Increased height for a larger button */
-    background-color: transparent; /* Transparent background */
-    border: none;
-    cursor: not-allowed; /* Initially disabled cursor */
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-#send-button svg {
-    fill: #777; /* Default (disabled) icon color - gray */
-    width: 25px; /* Increased icon size */
-    height: 25px; /* Increased icon size */
-}
-
-#send-button.enabled {
-    cursor: pointer; /* Change cursor to pointer when enabled */
-}
-
-#send-button.enabled svg {
-    fill: #ffffff; /* White icon when enabled (active) */
-}
-
-#send-button.enabled:hover svg {
-    fill: #4CAF50; /* Green icon on hover */
+    flex-direction: column;
+    gap: 10px;
 }
 
 /* Message Styles */
 .message {
     display: flex;
-    flex-direction: column;
-    max-width: 80%;
+    max-width: 70%;
     padding: 10px 15px;
-    border-radius: 20px;
-    margin-bottom: 10px;
-    position: relative;
+    border-radius: 10px;
+    word-wrap: break-word;
 }
 
 .user-message {
-    background-color: #4CAF50; /* Green background for user messages */
     align-self: flex-end;
-    border-radius: 20px 20px 0 20px;
+    background-color: #4CAF50; /* Green background */
+    color: #fff;
+    border-radius: 10px 10px 0 10px;
 }
 
 .bot-message {
-    background-color: #444; /* Dark background for bot messages */
     align-self: flex-start;
-    border-radius: 20px 20px 20px 0;
+    background-color: #444; /* Darker bot message */
+    color: #eaeaea;
+    border-radius: 10px 10px 10px 0;
 }
 
-.message-text {
+/* Chat Input */
+.chat-input {
+    display: flex;
+    padding: 15px;
+    background-color: #242424;
+    border-top: 1px solid #444;
+    gap: 10px;
+}
+
+.chat-input input {
+    flex: 1;
+    padding: 10px 15px;
+    border-radius: 20px;
+    background-color: #444;
+    color: #eaeaea;
+    border: 1px solid #555;
+    outline: none;
     font-size: 16px;
-    color: #eaeaea; /* Light text inside messages */
-    word-wrap: break-word;
-    max-width: 100%;
 }
 
-/* Scrollbar Styling */
+.chat-input input::placeholder {
+    color: #777;
+}
+
+.chat-input button {
+    background-color: transparent;
+    border: none;
+    cursor: not-allowed;
+}
+
+.chat-input button svg {
+    fill: #777;
+    width: 24px;
+    height: 24px;
+    transition: fill 0.3s;
+}
+
+.chat-input button.enabled {
+    cursor: pointer;
+}
+
+.chat-input button.enabled svg {
+    fill: #4CAF50;
+}
+
+/* Scrollbar */
 .chat-box::-webkit-scrollbar {
     width: 6px;
 }
@@ -146,30 +134,4 @@ body {
 .chat-box::-webkit-scrollbar-thumb {
     background-color: #4CAF50;
     border-radius: 3px;
-}
-
-.chat-box::-webkit-scrollbar-track {
-    background-color: #333;
-}
-
-/* Media Query for Responsiveness */
-@media (max-width: 768px) {
-    .chat-container {
-        width: 90%;
-        height: 70vh;
-    }
-
-    #user-input {
-        font-size: 14px;
-    }
-
-    #send-button {
-        width: 35px;
-        height: 35px;
-    }
-
-    #send-button svg {
-        width: 20px;
-        height: 20px;
-    }
 }

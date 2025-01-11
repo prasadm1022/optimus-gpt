@@ -1,48 +1,48 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const userInput = document.getElementById('user-input');
-    const sendButton = document.getElementById('send-button');
-    const socket = io(); // Connect to the Socket.IO server
+    const userInput = document.getElementById("user-input");
+    const sendButton = document.getElementById("send-button");
+    const messages = document.getElementById("messages");
+    const socket = io();
 
-    // Check if there is any text typed and enable/disable the button
-    userInput.addEventListener('input', () => {
-        if (userInput.value.trim() === '') {
-            sendButton.classList.remove('enabled');
-            sendButton.setAttribute('disabled', 'true');
-        } else {
-            sendButton.classList.add('enabled');
-            sendButton.removeAttribute('disabled');
-        }
-    });
-
-    // Handle sending the message when the button is clicked
-    sendButton.addEventListener('click', () => {
+    // Enable/Disable Send Button
+    userInput.addEventListener("input", () => {
         if (userInput.value.trim()) {
-            const message = userInput.value.trim();
-            // Emit the message to the server using Socket.IO
-            socket.emit('send_message', { message });
-
-            // Add user message to the chat
-            addMessageToChat(message, 'user-message');
-
-            userInput.value = ''; // Clear input after sending
-            sendButton.classList.remove('enabled');
-            sendButton.setAttribute('disabled', 'true');
+            sendButton.classList.add("enabled");
+            sendButton.removeAttribute("disabled");
+        } else {
+            sendButton.classList.remove("enabled");
+            sendButton.setAttribute("disabled", "true");
         }
     });
 
-    // Listen for the bot's response from the server
-    socket.on('receive_message', (data) => {
-        const botMessage = data.message;
-        addMessageToChat(botMessage, 'bot-message');
+    // Send Message
+    sendButton.addEventListener("click", () => {
+        const message = userInput.value.trim();
+        if (!message) return;
+
+        // Add User Message
+        addMessage(message, "user-message");
+
+        // Emit Message to Server
+        socket.emit("send_message", { message });
+
+        // Clear Input
+        userInput.value = "";
+        sendButton.classList.remove("enabled");
+        sendButton.setAttribute("disabled", "true");
     });
 
-    // Function to add message to the chat
-    function addMessageToChat(message, messageType) {
-        const chatBox = document.getElementById('chat-box');
-        const messageElement = document.createElement('div');
-        messageElement.classList.add('message', messageType);
-        messageElement.innerHTML = `<div class="message-text">${message}</div>`;
-        chatBox.appendChild(messageElement);
-        chatBox.scrollTop = chatBox.scrollHeight; // Scroll to the bottom
+    // Receive Bot Message
+    socket.on("receive_message", (data) => {
+        addMessage(data.message, "bot-message");
+    });
+
+    // Add Message to Chat
+    function addMessage(content, type) {
+        const messageElement = document.createElement("div");
+        messageElement.classList.add("message", type);
+        messageElement.textContent = content;
+        messages.appendChild(messageElement);
+        messages.scrollTop = messages.scrollHeight; // Auto-scroll
     }
 });
