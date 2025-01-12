@@ -2,6 +2,6 @@
 
 an AI bot for you as an all-in-one package...
 
-### run below command in cmd to update requirements.txt
+## Current Models
 
-> pip freeze > requirements.txt
+- OpenAI (gpt-4)
